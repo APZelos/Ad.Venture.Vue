@@ -19,23 +19,30 @@
         </div>
 
         <div class="dashboard__content dashboard__products">
-            v
+            <Product v-for="product in products"
+                :key="product.Id"
+                :product="product" />
         </div>
     </div>
 </template>
 
 <script>
+import Product from './Product'
+
 export default {
   name: 'Dashboard',
+  components: {
+    Product
+  },
   data () {
     return {
       products: [{
-          Id: 1,
-          Name: '',
-          Description: '',
-          Price: 200,
-          Category: 1,
-          ImagePath: ''
+        Id: 1,
+        Name: '',
+        Description: '',
+        Price: 200,
+        Category: 1,
+        ImagePath: ''
       }],
       orderBy: 'title',
       selectedProduct: 0
@@ -133,11 +140,4 @@ export default {
     padding-right: 30px;
 }
 
-.dashboard__product {
-    align-self: stretch;
-    border-radius: 25px;
-    background-color: #E5E5E5;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
-    height: 200px;
-}
 </style>

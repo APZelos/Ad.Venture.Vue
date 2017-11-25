@@ -37,11 +37,25 @@ export default {
     },
     price () {
       return this.product.Price
+    },
+    category () {
+      return this.product.Category
+    },
+    image () {
+      return this.product.ImagePath
     }
   }
 }
 </script>
 
 <style>
+
+.product {
+    align-self: stretch;
+    border-radius: 25px;
+    background-color: #E5E5E5;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
+    height: 200px;
+}
 
 </style>
