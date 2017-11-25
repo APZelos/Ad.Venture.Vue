@@ -6,8 +6,8 @@
           <div class="info__name">{{name}}</div>
           <div class="info__category">{{category}}</div>
           <div class="info__tags">
-            <i :class="genderIcon"></i>
-            <i :class="ageRangeIcon"></i>
+            <i :class="genderIcon" :title="gender.description"></i>
+            <i :class="ageRangeIcon" :title="ageRange.description"></i>
             <i class="tag tag__type"></i>
           </div>
         </div>
