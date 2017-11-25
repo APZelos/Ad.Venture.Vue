@@ -8,7 +8,7 @@
           <div class="info__tags">
             <i :class="genderIcon" :title="gender.description"></i>
             <i :class="ageRangeIcon" :title="ageRange.description"></i>
-            <i class="tag tag__type"></i>
+            <i :class="typeIcon" :title="type.description"></i>
           </div>
         </div>
       </div>
@@ -19,10 +19,11 @@
 import categories from '../../mixins/categories'
 import genders from '../../mixins/genders'
 import ageRanges from '../../mixins/ageRanges'
+import types from '../../mixins/types'
 
 export default {
   name: 'Product',
-  mixins: [categories, genders, ageRanges],
+  mixins: [categories, genders, ageRanges, types],
   props: {
     product: {
       type: Object,
@@ -63,6 +64,15 @@ export default {
     },
     ageRangeIcon () {
       const className = `tag tag__age fa ${this.ageRange.icon}`
+      return className
+    },
+    type () {
+      const typeId = this.product.Type
+      const type = this.getType(typeId)
+      return type
+    },
+    typeIcon () {
+      const className = `tag tag__type fa ${this.type.icon}`
       return className
     },
     image () {

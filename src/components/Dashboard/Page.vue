@@ -45,6 +45,7 @@ export default {
         Category: 1,
         Gender: 2,
         AgeRange: 1,
+        Type: 1,
         ImagePath: ''
       }],
       orderBy: 'title',
