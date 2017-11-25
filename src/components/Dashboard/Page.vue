@@ -15,16 +15,18 @@
                     <option value="Price">PRICE</option>
                 </select>
             </div>
-            <button class="dashboard__add">ADD</button>
+            <button class="dashboard__add" @click="addProduct">ADD</button>
         </div>
 
         <div class="dashboard__content dashboard__products">
-            <Product v-for="product in products"
+            <Product v-for="(product, index) in products"
                 :key="product.Id"
                 :product="product"
+                :index="index"
                 :isSelected="product.Id === selectedProduct"
                 @click="productClicked(product.Id)"
-                @unselected="unselected" />
+                @unselected="unselected"
+                @deleted="deleted"/>
         </div>
     </div>
 </template>
@@ -64,8 +66,32 @@ export default {
     productClicked (id) {
       this.selectedProduct = id
     },
-    unselected () {
+    unselected (product, index) {
+      const productList = this.products.slice(0)
+      productList[index] = product
+      this.products = productList
       this.selectedProduct = 0
+    },
+    deleted (index) {
+      const productList = this.products.slice(0)
+      productList.splice(index, 1)
+      this.products = productList
+      this.selectedProduct = 0
+    },
+    addProduct () {
+      this.selectedProduct = 0
+      let newProduct = {
+        Id: 0,
+        Name: '',
+        Description: '',
+        Price: 0,
+        Category: -1,
+        Gender: -1,
+        AgeRange: -1,
+        Type: -1,
+        ImagePath: ''
+      }
+      this.products.push(newProduct)
     }
   }
 }

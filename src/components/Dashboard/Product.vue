@@ -2,7 +2,7 @@
   <div :class="productClasses">
       <div class="product__image" @click="clicked">
         <img  :src="image" @click="onImageClick">
-        <input v-show="isSelected" id="fileInput" class="image__input" type="file" @change="onFileChange">
+        <input v-show="isSelected" :id="'fileInput' + product.Id" class="image__input" type="file" @change="onFileChange">
       </div>
       <div class="product__details">
         <div class="product__details-info">
@@ -16,7 +16,7 @@
           <select v-if="isSelected" 
             class="info__category"
             name="Category" 
-            v-model="this.product.Category">
+            v-model="product.Category">
             <option value="-1">category</option>
             <option value="0">Tshirt</option>
             <option value="1">Shirt</option>
@@ -25,17 +25,24 @@
             <option value="4">Shoes</option>
             <option value="5">Dress</option>
           </select>
+          <div v-if="!isSelected" class="info__price" @click="clicked">{{price}}</div>
+          <input v-if="isSelected" 
+            class="info__price"
+            type="number"
+            name="Price" 
+            placeholder="price"
+            v-model="price"/>
           <div class="info__tags">
-            <i :class="genderIcon" :title="gender.description"></i>
-            <i :class="ageRangeIcon" :title="ageRange.description"></i>
-            <i :class="typeIcon" :title="type.description"></i>
+            <i v-if="product.Gender > -1" :class="genderIcon" :title="gender.description"></i>
+            <i v-if="product.AgeRange > -1" :class="ageRangeIcon" :title="ageRange.description"></i>
+            <i v-if="product.Type > -1" :class="typeIcon" :title="type.description"></i>
           </div>
         </div>
       </div>
       <div class="product__stats"></div>
       <div class="product__buttons">
         <button v-if="isSelected" @click="submit" class="button button__delete">SAVE</button>
-        <button type="button" class="button button__delete">DELETE</button>
+        <button v-if="product.Id > 0" @click="deleteProduct" type="button" class="button button__delete">DELETE</button>
       </div>
   </div>
 </template>
@@ -53,6 +60,9 @@ export default {
     product: {
       type: Object,
       required: true
+    },
+    index: {
+      type: Number
     },
     isSelected: {
       type: Boolean,
@@ -80,17 +90,25 @@ export default {
     },
     description: {
       get: () => this.product.Description,
-      set: (value) => this.product.Description = value
+      set (value) {
+        this.product.Description = value
+      }
     },
     price: {
-      get: () => this.product.Price,
-      set: (value) => this.product.Price = value
+      get () {
+        return this.product.Price
+      },
+      set (value) {
+        this.product.Price = value
+      }
     },
     category: {
       get () {
         return this.getCategory(this.product.Category).description
       },
-      set: (value) => this.product.Category = value
+      set (value) {
+        this.product.Category = value
+      }
     },
     gender () {
       const genderId = this.product.Gender
@@ -128,17 +146,26 @@ export default {
     clicked () {
       this.$emit('click')
     },
+    deleteProduct () {
+      this.$http.post('/home/DeleteProduct', this.product.Id)
+      .then((result) => {
+        this.$emit('deleted', this.index)
+      }, (err) => {
+        console.log(err)
+        this.$emit('deleted', this.index)
+      })
+    },
     submit () {
       this.$http.post('/home/AddProduct', this.product)
       .then((result) => {
-        this.$emit('unselected')
+        this.$emit('unselected', result, this.index)
       }, (err) => {
         console.log(err)
-        this.$emit('unselected')
+        this.$emit('unselected', this.product, this.index)
       })
     },
     onImageClick () {
-      document.getElementById('fileInput').click()
+      document.getElementById('fileInput' + this.product.Id).click()
     },
     onFileChange (e) {
       var files = e.target.files || e.dataTransfer.files
@@ -166,6 +193,7 @@ export default {
   background-color: #E5E5E5;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
   height: 200px;
+  margin-bottom: 20px;
 }
 
 .product--selected {
@@ -193,6 +221,7 @@ export default {
   width: 300px;
 }
 
+.info__price,
 .info__category, 
 .info__name {
   background: transparent;
@@ -206,6 +235,7 @@ export default {
   color: #4C2E90;
 }
 
+.info__price,
 .info__category {
   font-size: 18px;
   color: #BA3139;
