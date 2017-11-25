@@ -23,7 +23,8 @@
                 :key="product.Id"
                 :product="product"
                 :isSelected="product.Id === selectedProduct"
-                @click="productClicked(product.Id)" />
+                @click="productClicked(product.Id)"
+                @unselected="unselected" />
         </div>
     </div>
 </template>
@@ -62,6 +63,9 @@ export default {
   methods: {
     productClicked (id) {
       this.selectedProduct = id
+    },
+    unselected () {
+      this.selectedProduct = 0
     }
   }
 }

@@ -1,7 +1,8 @@
 <template>
   <div :class="productClasses">
       <div class="product__image" @click="clicked">
-        <img v-if="!isSelected" src="" alt="">
+        <img  :src="image" @click="onImageClick">
+        <input v-show="isSelected" id="fileInput" class="image__input" type="file" @change="onFileChange">
       </div>
       <div class="product__details">
         <div class="product__details-info">
@@ -9,13 +10,20 @@
           <input v-if="isSelected" 
             class="info__name"
             name="Name" 
+            placeholder="name"
             v-model="name"/>
           <div v-if="!isSelected" class="info__category" @click="clicked">{{category}}</div>
           <select v-if="isSelected" 
             class="info__category"
             name="Category" 
             v-model="this.product.Category">
-            <option value="1">test</option>
+            <option value="-1">category</option>
+            <option value="0">Tshirt</option>
+            <option value="1">Shirt</option>
+            <option value="2">Trousers</option>
+            <option value="3">Hat</option>
+            <option value="4">Shoes</option>
+            <option value="5">Dress</option>
           </select>
           <div class="info__tags">
             <i :class="genderIcon" :title="gender.description"></i>
@@ -53,7 +61,7 @@ export default {
   },
   data () {
     return {
-      
+      pathL: ''
     }
   },
   computed: {
@@ -62,17 +70,27 @@ export default {
       if (this.isSelected) classes += ' product--selected'
       return classes
     },
-    name () {
-      return this.product.Name
+    name: {
+      get () {
+        return this.product.Name
+      },
+      set (value) {
+        this.product.Name = value
+      }
     },
-    description () {
-      return this.product.Description
+    description: {
+      get: () => this.product.Description,
+      set: (value) => this.product.Description = value
     },
-    price () {
-      return this.product.Price
+    price: {
+      get: () => this.product.Price,
+      set: (value) => this.product.Price = value
     },
-    category () {
-      return this.getCategory(this.product.Category).description
+    category: {
+      get () {
+        return this.getCategory(this.product.Category).description
+      },
+      set: (value) => this.product.Category = value
     },
     gender () {
       const genderId = this.product.Gender
@@ -102,7 +120,8 @@ export default {
       return className
     },
     image () {
-      return this.product.ImagePath
+      var test = this.product.ImagePath || '../../assets/Unknown.png'
+      return test
     }
   },
   methods: {
@@ -110,7 +129,29 @@ export default {
       this.$emit('click')
     },
     submit () {
-      
+      this.$http.post('/home/AddProduct', this.product)
+      .then((result) => {
+        this.$emit('unselected')
+      }, (err) => {
+        console.log(err)
+        this.$emit('unselected')
+      })
+    },
+    onImageClick () {
+      document.getElementById('fileInput').click()
+    },
+    onFileChange (e) {
+      var files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
+      this.createImage(files[0])
+    },
+    createImage (file) {
+      var reader = new FileReader()
+
+      reader.onload = (e) => {
+        this.product.ImagePath = e.target.result
+      }
+      reader.readAsDataURL(file)
     }
   }
 }
@@ -134,6 +175,16 @@ export default {
 .product__image {
   height: 100%;
   width: 200px;
+}
+
+.product__image img {
+  cursor: pointer;
+  width: 200px;
+  height: 200px;
+}
+
+.image__input {
+  display: none;
 }
 
 .product__details-info {
