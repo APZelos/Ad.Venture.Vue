@@ -47,10 +47,13 @@ export default {
     category () {
       return this.getCategory(this.product.Category).description
     },
-    genderIcon () {
+    gender () {
       const genderId = this.product.Gender
       const gender = this.getGender(genderId)
-      const className = `tag tag__gender fa ${gender.icon}`
+      return gender
+    },
+    genderIcon () {
+      const className = `tag tag__gender fa ${this.gender.icon}`
       return className
     },
     ageRangeIcon () {
