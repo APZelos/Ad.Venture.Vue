@@ -12,6 +12,7 @@
           </div>
         </div>
       </div>
+      <div class="product__stats"></div>
   </div>
 </template>
 
@@ -132,6 +133,10 @@ export default {
   background: linear-gradient(119.21deg, #BA3139, rgba(255, 255, 255, 0)), #4C2E90;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.product__stats {
+  width: 400px;
 }
 
 </style>
