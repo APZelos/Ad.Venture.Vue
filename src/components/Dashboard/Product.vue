@@ -13,6 +13,9 @@
         </div>
       </div>
       <div class="product__stats"></div>
+      <div class="product__buttons">
+        <button class="button button__delete">DELETE</button>
+      </div>
   </div>
 </template>
 
@@ -137,6 +140,26 @@ export default {
 
 .product__stats {
   width: 400px;
+}
+
+.product__buttons {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.button {
+  cursor: pointer;
+  align-self: flex-end;
+  margin-right: 15px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(119.21deg, #BA3139, rgba(255, 255, 255, 0)), #4C2E90;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 18px;
+  font-weight: lighter;
 }
 
 </style>
