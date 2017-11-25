@@ -122,10 +122,12 @@ export default {
 
 .info__tags {
   display: flex;
+  margin-top: 5px;
 }
 
 .tag {
   align-self: flex-start;
+  margin-right: 5px;
   font-size: 18px;
   background: linear-gradient(119.21deg, #BA3139, rgba(255, 255, 255, 0)), #4C2E90;
   -webkit-background-clip: text;
