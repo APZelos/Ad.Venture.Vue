@@ -21,7 +21,9 @@
         <div class="dashboard__content dashboard__products">
             <Product v-for="product in products"
                 :key="product.Id"
-                :product="product" />
+                :product="product"
+                :isSelected="product.Id === selectedProduct"
+                @click="productClicked(product.Id)" />
         </div>
     </div>
 </template>
@@ -50,6 +52,16 @@ export default {
       }],
       orderBy: 'title',
       selectedProduct: 0
+    }
+  },
+  computed: {
+    isAnyProductSelected () {
+      return this.selectedProduct > 0
+    }
+  },
+  methods: {
+    productClicked (id) {
+      this.selectedProduct = id
     }
   }
 }

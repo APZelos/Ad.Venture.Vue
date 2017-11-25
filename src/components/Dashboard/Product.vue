@@ -1,10 +1,22 @@
 <template>
-  <div class="product">
-      <div class="product__image"></div>
+  <div :class="productClasses">
+      <div class="product__image" @click="clicked">
+        <img v-if="!isSelected" src="" alt="">
+      </div>
       <div class="product__details">
         <div class="product__details-info">
-          <div class="info__name">{{name}}</div>
-          <div class="info__category">{{category}}</div>
+          <div v-if="!isSelected" class="info__name" @click="clicked">{{name}}</div>
+          <input v-if="isSelected" 
+            class="info__name"
+            name="Name" 
+            v-model="name"/>
+          <div v-if="!isSelected" class="info__category" @click="clicked">{{category}}</div>
+          <select v-if="isSelected" 
+            class="info__category"
+            name="Category" 
+            v-model="this.product.Category">
+            <option value="1">test</option>
+          </select>
           <div class="info__tags">
             <i :class="genderIcon" :title="gender.description"></i>
             <i :class="ageRangeIcon" :title="ageRange.description"></i>
@@ -14,7 +26,8 @@
       </div>
       <div class="product__stats"></div>
       <div class="product__buttons">
-        <button class="button button__delete">DELETE</button>
+        <button v-if="isSelected" @click="submit" class="button button__delete">SAVE</button>
+        <button type="button" class="button button__delete">DELETE</button>
       </div>
   </div>
 </template>
@@ -32,14 +45,23 @@ export default {
     product: {
       type: Object,
       required: true
+    },
+    isSelected: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
     return {
-
+      
     }
   },
   computed: {
+    productClasses () {
+      let classes = 'product'
+      if (this.isSelected) classes += ' product--selected'
+      return classes
+    },
     name () {
       return this.product.Name
     },
@@ -82,6 +104,14 @@ export default {
     image () {
       return this.product.ImagePath
     }
+  },
+  methods: {
+    clicked () {
+      this.$emit('click')
+    },
+    submit () {
+      
+    }
   }
 }
 </script>
@@ -97,6 +127,10 @@ export default {
   height: 200px;
 }
 
+.product--selected {
+  /* height: 100%; */
+}
+
 .product__image {
   height: 100%;
   width: 200px;
@@ -110,6 +144,8 @@ export default {
 
 .info__category, 
 .info__name {
+  background: transparent;
+  border: none;
   text-transform: uppercase;
   text-align: left;
 }
@@ -122,6 +158,7 @@ export default {
 .info__category {
   font-size: 18px;
   color: #BA3139;
+  padding-left: 0;
 }
 
 .info__tags {
