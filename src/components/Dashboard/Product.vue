@@ -4,6 +4,7 @@
       <div class="product__details">
         <div class="product__details-info">
           <div class="info__name">{{name}}</div>
+          <div class="info__category">{{category}}</div>
           <div class="info__tags">
             <i class="tag tag__gender"></i>
             <i class="tag tag__age"></i>
@@ -15,8 +16,11 @@
 </template>
 
 <script>
+import categories from '../../mixins/categories'
+
 export default {
   name: 'Product',
+  mixins: [categories],
   props: {
     product: {
       type: Object,
@@ -39,7 +43,7 @@ export default {
       return this.product.Price
     },
     category () {
-      return this.product.Category
+      return this.getCategory(this.product.Category).description
     },
     image () {
       return this.product.ImagePath
