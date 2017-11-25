@@ -44,6 +44,7 @@ export default {
         Price: 200,
         Category: 1,
         Gender: 2,
+        AgeRange: 1,
         ImagePath: ''
       }],
       orderBy: 'title',
