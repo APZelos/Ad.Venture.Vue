@@ -38,7 +38,7 @@ export default {
     return {
       products: [{
         Id: 1,
-        Name: '',
+        Name: 'NIKE JUVENATE',
         Description: '',
         Price: 200,
         Category: 1,

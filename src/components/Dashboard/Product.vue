@@ -68,4 +68,26 @@ export default {
   width: 200px;
 }
 
+.product__details-info {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+}
+
+.info__category, 
+.info__name {
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.info__name {
+  font-size: 36px;
+  color: #4C2E90;
+}
+
+.info__category {
+  font-size: 18px;
+  color: #BA3139;
+}
+
 </style>
