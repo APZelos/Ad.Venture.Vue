@@ -56,10 +56,13 @@ export default {
       const className = `tag tag__gender fa ${this.gender.icon}`
       return className
     },
-    ageRangeIcon () {
+    ageRange () {
       const ageRangeId = this.product.AgeRange
       const ageRange = this.getAgeRange(ageRangeId)
-      const className = `tag tag__age fa ${ageRange.icon}`
+      return ageRange
+    },
+    ageRangeIcon () {
+      const className = `tag tag__age fa ${this.ageRange.icon}`
       return className
     },
     image () {
