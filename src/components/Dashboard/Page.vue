@@ -42,6 +42,7 @@ export default {
         Description: '',
         Price: 200,
         Category: 1,
+        Gender: 2,
         ImagePath: ''
       }],
       orderBy: 'title',

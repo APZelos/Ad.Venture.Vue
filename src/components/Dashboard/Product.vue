@@ -6,7 +6,7 @@
           <div class="info__name">{{name}}</div>
           <div class="info__category">{{category}}</div>
           <div class="info__tags">
-            <i class="tag tag__gender"></i>
+            <i :class="genderIcon"></i>
             <i class="tag tag__age"></i>
             <i class="tag tag__type"></i>
           </div>
@@ -17,10 +17,11 @@
 
 <script>
 import categories from '../../mixins/categories'
+import genders from '../../mixins/genders'
 
 export default {
   name: 'Product',
-  mixins: [categories],
+  mixins: [categories, genders],
   props: {
     product: {
       type: Object,
@@ -44,6 +45,12 @@ export default {
     },
     category () {
       return this.getCategory(this.product.Category).description
+    },
+    genderIcon () {
+      const genderId = this.product.Gender
+      const gender = this.getGender(genderId)
+      const className = `tag tag__gender fa ${gender.icon}`
+      return className
     },
     image () {
       return this.product.ImagePath
@@ -88,6 +95,18 @@ export default {
 .info__category {
   font-size: 18px;
   color: #BA3139;
+}
+
+.info__tags {
+  display: flex;
+}
+
+.tag {
+  align-self: flex-start;
+  font-size: 18px;
+  background: linear-gradient(119.21deg, #BA3139, rgba(255, 255, 255, 0)), #4C2E90;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 </style>
