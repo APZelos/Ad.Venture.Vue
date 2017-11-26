@@ -40,10 +40,10 @@
         </div>
       </div>
       <div class="product__stats">
-        <Views :data="viewsData" :options="viewsOptions"/>
+        <canvas v-show="product.Id > 0" v-chart id="myChart" width="100%" height="100%"></canvas>
       </div>
       <div class="product__buttons">
-        <button v-if="isSelected" @click="submit" class="button button__delete">SAVE</button>
+        <button v-if="isSelected" @click="submit" class="button button__delete">SAVE <i v-if="isLoading" class="loading fa fa-refresh fa-spin"></i></button>
         <button v-if="product.Id > 0" @click="deleteProduct" type="button" class="button button__delete">DELETE</button>
       </div>
   </div>
@@ -55,6 +55,7 @@ import categories from '../../mixins/categories'
 import genders from '../../mixins/genders'
 import ageRanges from '../../mixins/ageRanges'
 import types from '../../mixins/types'
+import Chart from 'chart.js'
 
 export default {
   name: 'Product',
@@ -77,6 +78,8 @@ export default {
   },
   data () {
     return {
+      chart: {},
+      isLoading: false,
       uploadedSource: '',
       viewsData: {
         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -91,6 +94,49 @@ export default {
       viewsOptions: {
         responsive: true,
         maintainAspectRatio: false
+      }
+    }
+  },
+  directives: {
+    chart: {
+      inserted: function (el) {
+        let ctx = el.getContext('2d')
+        ctx.height = 190
+        var gradient = ctx.createLinearGradient(0, 0, 0, 188)
+        gradient.addColorStop(0, '#4C2E90')
+        gradient.addColorStop(1, '#E5E5E5')
+
+        let chart = new Chart(ctx, {
+          // The type of chart we want to create
+          type: 'line',
+
+          // The data for our dataset
+          data: {
+            labels: ['', '', '', '', '', '', ''],
+            datasets: [{
+              radius: 0,
+              backgroundColor: gradient,
+              borderColor: '#4C2E90',
+              data: [0, getRandomArbitrary(4, 13), getRandomArbitrary(2, 17), getRandomArbitrary(3, 14), getRandomArbitrary(0, 20), getRandomArbitrary(3, 18), getRandomArbitrary(10, 20)]
+            }]
+          },
+
+          // Configuration options go here
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              xAxes: [{ gridLines: { display: false, drawBorder: false } }],
+              yAxes: [{ gridLines: { display: false, drawBorder: false }, ticks: { display: false } }]
+            },
+            legend: { display: false, labels: { display: false } }
+          }
+        })
+        this.chart = chart
+
+        function getRandomArbitrary (min, max) {
+          return Math.random() * (max - min) + min
+        }
       }
     }
   },
@@ -167,7 +213,10 @@ export default {
       this.$emit('click')
     },
     deleteProduct () {
-      this.$http.post('/home/DeleteProduct', this.product.Id)
+      let obj = {
+        Id: this.product.Id
+      }
+      this.$http.post('/home/DeleteProduct', obj)
       .then((result) => {
         this.$emit('deleted', this.index)
       }, (err) => {
@@ -176,11 +225,14 @@ export default {
       })
     },
     submit () {
+      this.isLoading = true
       this.$http.post('/home/AddProduct', this.product)
       .then((result) => {
+        this.isLoading = false
         this.uploadedSource = ''
         this.$emit('unselected', result.body, this.index)
       }, (err) => {
+        this.isLoading = false
         console.log(err)
         this.$emit('unselected', this.product, this.index)
       })
@@ -216,7 +268,7 @@ export default {
   background-color: #E5E5E5;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
   height: 200px;
-  margin-bottom: 20px;
+  margin-bottom: 35px;
 }
 
 .product--selected {
@@ -234,6 +286,9 @@ export default {
   cursor: pointer;
   width: 200px;
   height: 200px;
+  border-bottom-left-radius: 25px;
+  border-top-left-radius: 25px;
+  object-fit: contain;
 }
 
 .image__input {
@@ -268,9 +323,20 @@ export default {
   padding-left: 0;
 }
 
+.info__category {
+  align-self: flex-start;
+}
+
 .info__tags {
   display: flex;
   margin-top: 5px;
+}
+
+.loading {
+  font-size: 18px;
+  background: linear-gradient(119.21deg, #BA3139, rgba(255, 255, 255, 0)), #4C2E90;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .tag {
@@ -284,6 +350,7 @@ export default {
 
 .product__stats {
   width: 400px;
+  padding-top: 38px;
 }
 
 .product__buttons {

@@ -82,7 +82,7 @@ export default {
         ImagePath: '',
         ImageSrc: ''
       }
-      this.products.push(newProduct)
+      this.products.unshift(newProduct)
     }
   },
   beforeMount () {
@@ -101,8 +101,7 @@ export default {
 .dashboard {
     display: flex;
     flex-direction: column;
-    width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
     background: linear-gradient(119.21deg, #BA3139 -34.38%, rgba(255, 255, 255, 0) 139.49%), #4C2E90;
 }
 
@@ -110,7 +109,6 @@ export default {
     align-self: stretch;
     display: flex;
     flex-direction: column;
-    height: 200px;
 }
 
 .dashboard__profile-pic {
@@ -188,7 +186,7 @@ export default {
 
 .dashboard__products {
     overflow: auto;
-    padding-right: 5px;
+    overflow-x: hidden;
 }
 
 </style>
