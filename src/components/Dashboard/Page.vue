@@ -42,17 +42,7 @@ export default {
   },
   data () {
     return {
-      products: [{
-        Id: 1,
-        Name: 'NIKE JUVENATE',
-        Description: '',
-        Price: 200,
-        Category: 1,
-        Gender: 2,
-        AgeRange: 1,
-        Type: 1,
-        ImagePath: ''
-      }],
+      products: [],
       orderBy: 'title',
       selectedProduct: 0
     }
@@ -89,10 +79,19 @@ export default {
         Gender: -1,
         AgeRange: -1,
         Type: -1,
-        ImagePath: ''
+        ImagePath: '',
+        ImageSrc: ''
       }
       this.products.push(newProduct)
     }
+  },
+  beforeMount () {
+    this.$http.get('/home/GetProducts')
+    .then((result) => {
+      this.products = result.body
+    }, (err) => {
+      console.log(err)
+    })
   }
 }
 </script>
@@ -111,6 +110,7 @@ export default {
     align-self: stretch;
     display: flex;
     flex-direction: column;
+    height: 200px;
 }
 
 .dashboard__profile-pic {
@@ -184,6 +184,11 @@ export default {
     font-weight: lighter;
     padding-left: 30px;
     padding-right: 30px;
+}
+
+.dashboard__products {
+    overflow: auto;
+    padding-right: 5px;
 }
 
 </style>

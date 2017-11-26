@@ -1,7 +1,7 @@
 <template>
   <div :class="productClasses">
       <div class="product__image" @click="clicked">
-        <img  :src="image" @click="onImageClick">
+        <img  :src=image @click="onImageClick">
         <input v-show="isSelected" :id="'fileInput' + product.Id" class="image__input" type="file" @change="onFileChange">
       </div>
       <div class="product__details">
@@ -22,7 +22,7 @@
             <option value="1">Shirt</option>
             <option value="2">Trousers</option>
             <option value="3">Hat</option>
-            <option value="4">Shoes</option>
+            <option value="4">Tuxedo</option>
             <option value="5">Dress</option>
           </select>
           <div v-if="!isSelected" class="info__price" @click="clicked">{{price}}</div>
@@ -39,7 +39,9 @@
           </div>
         </div>
       </div>
-      <div class="product__stats"></div>
+      <div class="product__stats">
+        <Views :data="viewsData" :options="viewsOptions"/>
+      </div>
       <div class="product__buttons">
         <button v-if="isSelected" @click="submit" class="button button__delete">SAVE</button>
         <button v-if="product.Id > 0" @click="deleteProduct" type="button" class="button button__delete">DELETE</button>
@@ -48,6 +50,7 @@
 </template>
 
 <script>
+// import Views from './Views'
 import categories from '../../mixins/categories'
 import genders from '../../mixins/genders'
 import ageRanges from '../../mixins/ageRanges'
@@ -55,6 +58,9 @@ import types from '../../mixins/types'
 
 export default {
   name: 'Product',
+  // components: {
+  //   Views
+  // },
   mixins: [categories, genders, ageRanges, types],
   props: {
     product: {
@@ -71,7 +77,21 @@ export default {
   },
   data () {
     return {
-      pathL: ''
+      uploadedSource: '',
+      viewsData: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [
+          {
+            label: 'Data One',
+            backgroundColor: '#f87979',
+            data: [40, 39, 10, 40, 39, 80, 40]
+          }
+        ]
+      },
+      viewsOptions: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
     }
   },
   computed: {
@@ -138,7 +158,7 @@ export default {
       return className
     },
     image () {
-      var test = this.product.ImagePath || '../../assets/Unknown.png'
+      var test = this.uploadedSource || this.product.ImagePath || '/Content/img//NoImageAvailable.png'
       return test
     }
   },
@@ -158,7 +178,8 @@ export default {
     submit () {
       this.$http.post('/home/AddProduct', this.product)
       .then((result) => {
-        this.$emit('unselected', result, this.index)
+        this.uploadedSource = ''
+        this.$emit('unselected', result.body, this.index)
       }, (err) => {
         console.log(err)
         this.$emit('unselected', this.product, this.index)
@@ -176,7 +197,9 @@ export default {
       var reader = new FileReader()
 
       reader.onload = (e) => {
-        this.product.ImagePath = e.target.result
+        this.uploadedSource = e.target.result
+        this.product.ImageSrc = e.target.result
+        this.product.ImagePath = e.target.fileName
       }
       reader.readAsDataURL(file)
     }
@@ -203,6 +226,8 @@ export default {
 .product__image {
   height: 100%;
   width: 200px;
+  border-bottom-left-radius: 25px;
+  border-top-left-radius: 25px;
 }
 
 .product__image img {
@@ -219,6 +244,7 @@ export default {
   display: flex;
   flex-direction: column;
   width: 300px;
+  padding-left: 5px;
 }
 
 .info__price,
@@ -250,7 +276,7 @@ export default {
 .tag {
   align-self: flex-start;
   margin-right: 5px;
-  font-size: 18px;
+  font-size: 22px !important;
   background: linear-gradient(119.21deg, #BA3139, rgba(255, 255, 255, 0)), #4C2E90;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

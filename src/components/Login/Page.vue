@@ -13,7 +13,8 @@
                 type="password" />
             <input class="login__submit"
                 value="Sign In"
-                type="submit" />
+                type="button"
+                @click="click" />
             <div class="login__fyp">Forgot your password?</div>
           </form>
       </div>
@@ -27,6 +28,11 @@ export default {
   data () {
     return {
       msg: 'Hello'
+    }
+  },
+  methods: {
+    click () {
+      this.$router.push('/Dashboard')
     }
   }
 }
@@ -75,7 +81,7 @@ export default {
     color: #E5E5E5;
 }
 
-.login input[type="submit"] {
+.login input[type="button"] {
     cursor: pointer;    
     background: linear-gradient(90deg, #BA3139 -41.14%, rgba(255, 255, 255, 0) 100%), #4C2E90;
     margin-top: 40px;
